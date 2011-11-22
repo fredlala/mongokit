@@ -156,6 +156,33 @@ class FS(GridFS):
         except StopIteration:
             raise NoFile("no version %d for filename %r" % (version, filename))
 
+    def versions(self, filename, **kwargs):
+        """Return number of version for specified filename
+        This is a rapid hack, which as not been add to tests
+        TODO : Ajouter le test de version
+
+        class Doc(Document):
+            structure = {
+                'title':unicode,
+            }
+            gridfs = {'files': ['source']}
+        con = Connection()
+        col = con['test']['mongokit']
+        con.register([Doc])
+        doc = col.Doc()
+        doc['title'] = u'Hello'
+        doc.fs.source = "Hello World !"
+        doc.fs.versions() --> 1 attendu
+        doc.fs.source = "Hello World 2 !"
+        doc.fs.versions() --> 2 attendu
+        """
+        # This is took from pymongo source. We need to go a little deeper here
+        self._GridFS__files.ensure_index([("filename", ASCENDING),
+                                   ("uploadDate", DESCENDING)])
+        ########## Begin of MongoKit hack ##########
+        return self._GridFS__files.find(self._get_spec(filename=filename, **kwargs)).count()
+        ########## end of MongoKit hack ############
+
 class FSContainer(FS):
     def __init__(self, container_name, obj):
         self._container_name = container_name
