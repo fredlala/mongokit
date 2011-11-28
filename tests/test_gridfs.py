@@ -285,16 +285,3 @@ class GridFSTestCase(unittest.TestCase):
 
         self.assertEqual(doc.fs.versions("source"), 2)
 
-        # assert doc.fs.source == "Hello World !"
-
-        # f = doc.fs.attachments.new_file('test')
-        # f.write('this is a test')
-        # f.close()
-        # assert doc.fs.attachments['test'] == 'this is a test'
-
-        # doc = self.col.Doc.find_one()
-        # assert doc.fs.bla == "Salut !"
-        # assert doc.fs.foo == "Hello World !"
-        # assert doc.fs.attachments['test'] == 'this is a test', doc.fs.attachments['test']
-        # assert doc.fs.attachments.get_last_version('test').read() == 'this is a test'
-
