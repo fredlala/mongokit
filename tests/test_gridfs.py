@@ -261,4 +261,40 @@ class GridFSTestCase(unittest.TestCase):
         new_id = doc.fs.get_last_version("source")._id
         doc.fs.delete(new_id)
         assert doc.fs.source == 'Hello World', doc.fs.source
-         
+
+    def test_gridfs_versions(self):
+	
+        class Doc(Document):
+            structure = {
+                'title':unicode,
+            }
+            gridfs = {'files': ['source']}
+        self.connection.register([Doc])
+        doc = self.col.Doc()
+        doc['title'] = u'Hello'
+        doc.save()
+
+        # Version 1
+        doc.fs.source = "Hello World !"
+        assert doc.fs.source == "Hello World !"
+        self.assertEqual(doc.fs.versions("source"), 1)
+
+        # Version 2
+        doc.fs.source = "Salut !"
+        assert doc.fs.source == "Salut !"
+
+        self.assertEqual(doc.fs.versions("source"), 2)
+
+        # assert doc.fs.source == "Hello World !"
+
+        # f = doc.fs.attachments.new_file('test')
+        # f.write('this is a test')
+        # f.close()
+        # assert doc.fs.attachments['test'] == 'this is a test'
+
+        # doc = self.col.Doc.find_one()
+        # assert doc.fs.bla == "Salut !"
+        # assert doc.fs.foo == "Hello World !"
+        # assert doc.fs.attachments['test'] == 'this is a test', doc.fs.attachments['test']
+        # assert doc.fs.attachments.get_last_version('test').read() == 'this is a test'
+
